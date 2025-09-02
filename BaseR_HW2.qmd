@@ -1,0 +1,113 @@
+---
+title: "Programming in Base R"
+format: html
+editor: visual
+---
+
+## Task 1: Vector Practice
+
+Create two vectors using blood pressure data on subjects pre-treatment and post-treatment.
+
+```{r}
+Pre <- c(120, 151, 125, 126, 115, 132, 132, 129, 134, 139, 127, 122, 127, 135, 133, 128, 147, 138, 140, 132)
+
+Post <- c(127, 145, 135, 122, 115, 122, 123, 126, 126, 129, 132, 146, 120, 114, 121, 120, 128, 120, 133, 115)
+```
+
+Assign names to the vector elements using the paste() function.
+
+```{r}
+Subject_names <- paste("Subject", 1:20, sep = "_")
+names(Pre) <- Subject_names
+names(Post) <- Subject_names
+```
+
+Calculate the change in blood pressure (Pre - Post) for each patient.
+
+```{r}
+BPchange <- Pre - Post
+```
+
+Calculate the average decrease in blood pressure across all patients.
+
+```{r}
+mean(BPchange)
+```
+
+Determine which patients experienced a decrease in blood pressure after treatment.
+
+```{r}
+which(BPchange > 0)
+```
+
+Subset the vector of differences to only return those that have a positive change.
+
+```{r}
+Positive <- BPchange[BPchange > 0]
+Positive
+```
+
+Calculate the average decrease in blood pressure for those where the blood pressure decreased.
+
+```{r}
+mean(Positive)
+```
+
+## Task 2: Data Frame Practice
+
+Create a data frame object from data above.
+
+```{r}
+my_df <- data.frame(patient=Subject_names, pre_bp=Pre, post_bp = Post, diff_bp = BPchange, row.names = 1:20)
+my_df
+```
+
+Return only rows of the data frame where the diff_bp is negative.
+
+```{r}
+subset(my_df, diff_bp<0)
+```
+
+Add a new column to the data frame corresponding to TRUE if the post_bp is less than 120 and FALSE if it is not.
+
+```{r}
+my_df$lessthan120 <- ifelse(my_df$post_bp<120,TRUE,FALSE)
+my_df
+```
+
+Print the data frame out nicely.
+
+```{r}
+knitr::kable(my_df)
+```
+
+## Task 3: List Practice
+
+Create a new data frame for the placebo group. 
+```{r}
+PL_prebp <- c(138, 135, 147, 117, 152, 134, 114, 121, 131, 130)
+PL_postbp <- c(105, 136, 123, 130, 134, 143, 135, 139, 120, 124)
+PL_bpchange <- PL_prebp - PL_postbp
+PL_subjects <- paste("PLSubject", 1:10, sep = "_")
+PL_bp120 <- ifelse(PL_postbp<120,TRUE,FALSE)
+
+placebo_df <- data.frame(patient=PL_subjects, pre_bp=PL_prebp, post_bp = PL_postbp, diff_bp = PL_bpchange, lessthan120 = PL_bp120, row.names = 1:10)
+
+placebo_df
+```
+Create and store a list with two elements, treatment data and placebo data. 
+```{r}
+bpdata_list <- list(treatment = my_df, placebo = placebo_df)
+bpdata_list
+```
+Access the first list element using three different types of syntax. 
+```{r}
+bpdata_list[1]
+bpdata_list[[1]]
+bpdata_list$treatment
+```
+In one line of code, access the pre_bp column of the placebo data frame. 
+```{r}
+bpdata_list[[2]][2]
+```
+
